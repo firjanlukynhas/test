@@ -37,6 +37,14 @@ app.post('/produtos', (req, res) => {
         return res.status(400).send('Quantidade deve ser um número inteiro maior ou igual a 0.');
     }
 
+    conexao.query(
+        "INSERT INTO produtos (nome, preco, quantidade) VALUES (?,?,?)",
+        [produto.nome,produto.preco,produto.quantidade],
+        () => {
+            res.status(201).send("produtos cadastrado com sucesso!")
+        }
+    );
+
     produtos.push(produto)
 
     res.status(201).send('Produtos cadastrado com sucesso!')
