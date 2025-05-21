@@ -51,9 +51,16 @@ app.post('/produtos', (req, res) => {
 
 })
 
+
 app.get('/produtos', (req, res) => {
-    res.status(200).send(produtos)
+    conexao.query("SELECT nome, preco,quantidade from produtos", (err, results) => {
+        if(err) {
+            return res.status(500).send("erro ao buscar produtos");
+        }
+        res.status(200).send(results);
+    })
 })
+
 
 app.listen(3000, () => {
     console.log("Servidor backend rodando em http://localhost:3000")
