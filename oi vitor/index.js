@@ -103,7 +103,7 @@ app.post('/planos', (req, res) => {
 })
 
 app.get('/planos', (req, res) => {
-    conexao.query('SELECT * FROM  planos', (err, results) => {
+    conexao.query('SELECT nome,duracao, preco,descricao FROM  planos', (err, results) => {
         if (err) {
             res.status(500).send('Erro ao buscar planos')
         }
@@ -112,6 +112,36 @@ app.get('/planos', (req, res) => {
     })
 })
 
+app.delete("/planos/:codigo",(req, res) => {
+    const{codigo} = req.params;
+    conexao.query("DELETE FROM planos WHERE id = ? ",[codigo],(err,results) => {
+        if (err) {
+            return res.status(500).send("erro ao deletar");
+
+        }
+        if(results.affectedRows===0){
+            return res.status(404).send("plano não encontrado");
+        }
+        res.status(200).send("plano deletado com sucesso");
+    });
+
+})
+
+app.put("/planos/:codigo",(req,res)=>{
+    const{codigo} =req.params;
+    const{nome,duracao,preco,descricao}= req.body;
+
+    const query = "UPDATE produtos SET nome = ?,preco = ?, preco =?, descricao=?, WHERE id = ?";
+    conexao.query(query,[nome,duracao,preco, descricao , codigo] , (err,results) => {
+        if(err) {
+            return res.status(500).send("erro ao atualizar");
+        }
+        if(results.affectedRows === 0){
+            return res.status(404).send("plano não encontrado");
+        }
+        res.send ("plano atualizado com sucesso");
+    })
+})
 
 app.get('/sessoes', (req, res) => {
     conexao.query("SELECT aluno,personal,tipo_treino,data, horario,observacoes from sessoes", (err, results) => {
